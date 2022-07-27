@@ -33,7 +33,9 @@ const config = {
 		csp: {
 			directives: {
 				'base-uri': ['self'],
-				'default-src': ['self']
+				'default-src': ['self'],
+				'style-src': ['self', 'unsafe-inline', 'https://fonts.googleapis.com'],
+				'font-src': ['self', 'https://fonts.gstatic.com']
 			}
 		}
 	}

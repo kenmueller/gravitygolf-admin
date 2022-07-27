@@ -9,14 +9,35 @@
 
 	import MetaBase from '../components/Meta/Base.svelte'
 	import PageTransition from '../components/Transition/Page.svelte'
+	import Layout from '../components/Layout.svelte'
 
 	export let url: URL
 </script>
 
+<svelte:head>
+	<link
+		rel="preconnect"
+		href="https://fonts.googleapis.com"
+		crossorigin="anonymous"
+	/>
+	<link
+		rel="preconnect"
+		href="https://fonts.gstatic.com"
+		crossorigin="anonymous"
+	/>
+	<link
+		rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap"
+		crossorigin="anonymous"
+	/>
+</svelte:head>
+
 <MetaBase />
 
 <PageTransition {url}>
-	<slot />
+	<Layout>
+		<slot />
+	</Layout>
 </PageTransition>
 
 <style lang="scss" global>
@@ -34,6 +55,11 @@
 	html,
 	body {
 		height: 100%;
+	}
+
+	body {
+		overflow: hidden;
+		background: colors.$gray;
 	}
 
 	a {

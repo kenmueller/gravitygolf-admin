@@ -5,5 +5,5 @@
 </script>
 
 <MetaImage />
-<MetaTitle />
-<MetaDescription />
+<MetaTitle value="Levels | Gravity Golf Admin" />
+<MetaDescription value="Levels | Gravity Golf Admin" />

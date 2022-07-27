@@ -9,7 +9,7 @@
 
 	export let level: Level
 	export let index: number
-	export let maxIndex: number
+	export let lastIndex: number
 
 	const move = async (offset: -1 | 1) => {
 		try {
@@ -17,6 +17,7 @@
 			$moveLoading = true
 
 			$selectedLevel = level.id
+			window.location.hash = `#${level.id}`
 
 			const response = await fetch(
 				`/api/levels/${encodeURIComponent(level.id)}/move`,
@@ -51,7 +52,7 @@
 		<div class="move">
 			<button
 				class="up"
-				aria-busy={$moveLoading}
+				aria-busy={$moveLoading || undefined}
 				disabled={index <= 0}
 				on:click={() => move(-1)}
 			>
@@ -59,8 +60,8 @@
 			</button>
 			<button
 				class="down"
-				aria-busy={$moveLoading}
-				disabled={index >= maxIndex}
+				aria-busy={$moveLoading || undefined}
+				disabled={index >= lastIndex}
 				on:click={() => move(1)}
 			>
 				<Up />
@@ -145,5 +146,11 @@
 		> :global(svg) {
 			transform: rotate(0.5turn);
 		}
+	}
+
+	[aria-busy],
+	:disabled {
+		pointer-events: none;
+		opacity: 0.5;
 	}
 </style>

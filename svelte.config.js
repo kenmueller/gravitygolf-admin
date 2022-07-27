@@ -34,6 +34,11 @@ const config = {
 			directives: {
 				'base-uri': ['self'],
 				'default-src': ['self'],
+				'connect-src': [
+					'self',
+					'https://firestore.googleapis.com',
+					'https://firestore.googleapis.com'
+				],
 				'style-src': ['self', 'unsafe-inline', 'https://fonts.googleapis.com'],
 				'font-src': ['self', 'https://fonts.gstatic.com']
 			}

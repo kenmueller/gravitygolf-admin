@@ -18,7 +18,7 @@
 	import type { Load } from '@sveltejs/kit'
 
 	import type Level from '$lib/level'
-	import levels from '$lib/levels'
+	import levels from '$lib/level/levels'
 	import errorFromResponse from '$lib/error/from/response'
 	import errorFromValue from '$lib/error/from/value'
 	import MetaImage from '../components/Meta/Image.svelte'
@@ -37,7 +37,7 @@
 
 <main>
 	{#each currentLevels as level, index (level.id)}
-		<LevelRow {level} {index} maxIndex={currentLevels.length - 1} />
+		<LevelRow {level} {index} lastIndex={currentLevels.length - 1} />
 	{/each}
 </main>
 

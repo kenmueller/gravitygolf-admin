@@ -23,6 +23,7 @@
 				method: 'POST',
 				body: password
 			})
+
 			if (!response.ok) throw await errorFromResponse(response)
 
 			session.set({ ...session, password: true })

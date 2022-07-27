@@ -9,7 +9,10 @@ const firestore = getFirestore(admin)
 
 export const GET: RequestHandler = async () => {
 	try {
-		const { docs } = await firestore.collection('levels').orderBy('index').get()
+		const { docs } = await firestore
+			.collection('levels')
+			.orderBy('index', 'asc')
+			.get()
 
 		return {
 			headers: { 'content-type': 'application/json' },

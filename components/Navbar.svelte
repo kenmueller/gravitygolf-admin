@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/stores'
+	import errorFromResponse from '$lib/error/from/response'
+
+	import session from '$lib/session/store'
 
 	const pages = [
 		{ name: 'Home', link: '/' },
@@ -7,6 +10,30 @@
 	]
 
 	$: current = $page.url.pathname
+
+	let password = ''
+	let passwordLoading = false
+
+	const savePassword = async () => {
+		try {
+			if (!password || passwordLoading) return
+			passwordLoading = true
+
+			const response = await fetch('/api/password', {
+				method: 'POST',
+				body: password
+			})
+			if (!response.ok) throw await errorFromResponse(response)
+
+			session.set({ ...session, password: true })
+			password = ''
+		} catch (error) {
+			console.error(error)
+			alert((error as Error).message)
+		} finally {
+			passwordLoading = false
+		}
+	}
 </script>
 
 <nav>
@@ -22,6 +49,15 @@
 			{name}
 		</a>
 	{/each}
+	<form on:submit|preventDefault={savePassword}>
+		<input
+			placeholder="{$session.password ? 'Change' : 'Enter'} password"
+			bind:value={password}
+		/>
+		<button aria-busy={passwordLoading || undefined} disabled={!password}>
+			Save
+		</button>
+	</form>
 </nav>
 
 <style lang="scss">
@@ -48,6 +84,11 @@
 	.page {
 		position: relative;
 		color: white;
+		transition: opacity 0.3s;
+
+		&:hover {
+			opacity: 0.7;
+		}
 
 		& + & {
 			margin-left: 1rem;
@@ -55,6 +96,7 @@
 	}
 
 	[aria-current] {
+		pointer-events: none;
 		color: colors.$blue;
 
 		&::after {
@@ -68,6 +110,44 @@
 			height: $height;
 			background: currentColor;
 			border-radius: math.div($height, 2);
+		}
+	}
+
+	form {
+		display: flex;
+		align-items: stretch;
+		margin-left: auto;
+	}
+
+	input {
+		padding: 0.3rem 0.7rem;
+		font-size: 0.9rem;
+		color: white;
+		background: rgba(white, 0.1);
+		border-radius: 0.5rem;
+
+		&::placeholder {
+			color: rgba(white, 0.5);
+		}
+	}
+
+	button {
+		margin-left: 0.5rem;
+		padding: 0 0.8rem;
+		font-size: 0.9rem;
+		color: white;
+		background: colors.$blue;
+		border-radius: 0.5rem;
+		transition: opacity 0.3s;
+
+		&:hover {
+			opacity: 0.7;
+		}
+
+		&[aria-busy],
+		&:disabled {
+			pointer-events: none;
+			opacity: 0.5;
 		}
 	}
 </style>

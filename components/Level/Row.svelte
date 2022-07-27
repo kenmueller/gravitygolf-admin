@@ -73,7 +73,7 @@
 		<p class="name">Level {index + 1}</p>
 		<button class="edit">
 			<Edit />
-			<span>Edit</span>
+			Edit
 		</button>
 		<button
 			class="delete"
@@ -106,10 +106,10 @@
 <style lang="scss">
 	@use 'sass:math';
 
-	.container + :global(.container) {
-		margin-top: 0.5rem;
-		padding-top: 0.5rem;
-		border-top: 1px solid rgba(white, 0.1);
+	.container {
+		margin-bottom: 0.5rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid rgba(white, 0.1);
 	}
 
 	article {
@@ -159,10 +159,7 @@
 
 		> :global(svg) {
 			height: 1.4rem;
-		}
-
-		> span {
-			margin-left: 0.4rem;
+			margin-right: 0.4rem;
 		}
 	}
 

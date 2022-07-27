@@ -25,6 +25,7 @@
 	import MetaTitle from '../components/Meta/Title.svelte'
 	import MetaDescription from '../components/Meta/Description.svelte'
 	import LevelRow from '../components/Level/Row.svelte'
+	import NewLevel from '../components/Level/New.svelte'
 
 	export let initialLevels: Level[]
 
@@ -39,6 +40,7 @@
 	{#each currentLevels as level, index (level.id)}
 		<LevelRow {level} {index} lastIndex={currentLevels.length - 1} />
 	{/each}
+	<NewLevel />
 </main>
 
 <style lang="scss">

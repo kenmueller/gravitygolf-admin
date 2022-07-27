@@ -5,6 +5,8 @@ import type Locals from '$lib/locals'
 import admin from '$lib/firebase/admin'
 import verifyPassword from '$lib/password/verify'
 import invalidPassword from '$lib/password/invalid'
+import exists from '$lib/snapshot/exists'
+import get from '$lib/snapshot/get'
 import HttpError from '$lib/error/http'
 import ErrorCode from '$lib/error/code'
 import errorFromValue from '$lib/error/from/value'
@@ -30,10 +32,11 @@ export const POST: RequestHandler = async ({
 
 		const snapshot = await firestore.doc(`levels/${id}`).get()
 
-		if (!snapshot.exists)
+		if (!exists(snapshot))
 			throw new HttpError(ErrorCode.NotFound, 'Level does not exist')
 
-		const index = snapshot.get('index') as number
+		const index = get<number, null>(snapshot, 'index', 'number', null)
+		if (!index) throw new HttpError(ErrorCode.Internal, 'Missing index')
 
 		switch (offset) {
 			case -1: {

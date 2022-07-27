@@ -5,11 +5,37 @@
 	import selectedLevel from '$lib/level/selected'
 	import errorFromResponse from '$lib/error/from/response'
 	import Edit from '../../images/Edit.svelte'
+	import Trash from '../../images/Trash.svelte'
 	import Up from '../../images/Up.svelte'
 
 	export let level: Level
 	export let index: number
 	export let lastIndex: number
+
+	let deleteLoading = false
+
+	const deleteLevel = async () => {
+		try {
+			if (deleteLoading) return
+
+			if (!confirm(`Are you sure you want to delete level ${index + 1}?`))
+				return
+
+			deleteLoading = true
+
+			const response = await fetch(
+				`/api/levels/${encodeURIComponent(level.id)}`,
+				{ method: 'DELETE' }
+			)
+
+			if (!response.ok) throw await errorFromResponse(response)
+		} catch (error) {
+			console.error(error)
+			alert((error as Error).message)
+		} finally {
+			deleteLoading = false
+		}
+	}
 
 	const move = async (offset: -1 | 1) => {
 		try {
@@ -48,6 +74,13 @@
 		<button class="edit">
 			<Edit />
 			<span>Edit</span>
+		</button>
+		<button
+			class="delete"
+			aria-busy={deleteLoading || undefined}
+			on:click={deleteLevel}
+		>
+			<Trash />
 		</button>
 		<div class="move">
 			<button
@@ -101,6 +134,23 @@
 		margin: 0 auto 0 1rem;
 	}
 
+	.edit,
+	.delete,
+	.up,
+	.down {
+		transition: opacity 0.3s;
+
+		&:hover {
+			opacity: 0.7;
+		}
+	}
+
+	[aria-busy],
+	:disabled {
+		pointer-events: none;
+		opacity: 0.5;
+	}
+
 	.edit {
 		display: flex;
 		align-items: center;
@@ -113,6 +163,15 @@
 
 		> span {
 			margin-left: 0.4rem;
+		}
+	}
+
+	.delete {
+		margin-left: 1rem;
+		color: colors.$red;
+
+		> :global(svg) {
+			height: 1.8rem;
 		}
 	}
 
@@ -129,11 +188,6 @@
 		color: white;
 		background: rgba(white, 0.1);
 		border-radius: 0.3rem;
-		transition: opacity 0.3s;
-
-		&:hover {
-			opacity: 0.7;
-		}
 
 		> :global(svg) {
 			height: 0.6rem;
@@ -146,11 +200,5 @@
 		> :global(svg) {
 			transform: rotate(0.5turn);
 		}
-	}
-
-	[aria-busy],
-	:disabled {
-		pointer-events: none;
-		opacity: 0.5;
 	}
 </style>

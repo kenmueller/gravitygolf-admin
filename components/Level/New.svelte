@@ -1,4 +1,5 @@
 <script lang="ts">
+	import session from '$lib/session/store'
 	import selectedLevel from '$lib/level/selected'
 	import errorFromResponse from '$lib/error/from/response'
 
@@ -27,7 +28,11 @@
 	}
 </script>
 
-<button aria-busy={loading || undefined} on:click={newLevel}>
+<button
+	aria-busy={loading || undefined}
+	disabled={!$session.password}
+	on:click={newLevel}
+>
 	<Plus />
 	New Level
 </button>
@@ -54,7 +59,8 @@
 		}
 	}
 
-	[aria-busy] {
+	[aria-busy],
+	:disabled {
 		pointer-events: none;
 		opacity: 0.5;
 	}

@@ -1,10 +1,12 @@
 <script lang="ts">
 	import type Level from '$lib/level'
+	import session from '$lib/session/store'
 	import moveLoading from '$lib/level/move/loading'
 	import focusedLevel from '$lib/level/focused'
 	import selectedLevel from '$lib/level/selected'
 	import errorFromResponse from '$lib/error/from/response'
 	import Edit from '../../images/Edit.svelte'
+	import Message from '../../images/Message.svelte'
 	import Trash from '../../images/Trash.svelte'
 	import Up from '../../images/Up.svelte'
 
@@ -12,16 +14,49 @@
 	export let index: number
 	export let lastIndex: number
 
+	let editMessageLoading = false
+
+	const editMessage = async () => {
+		try {
+			if (editMessageLoading) return
+			editMessageLoading = true
+
+			$selectedLevel = level.id
+			window.location.hash = `#${level.id}`
+
+			const message = prompt('Edit tooltip', level.message ?? '')
+			if (message === null) return
+
+			const response = await fetch(
+				`/api/levels/${encodeURIComponent(level.id)}/message`,
+				{
+					method: 'POST',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify(message || null)
+				}
+			)
+
+			if (!response.ok) throw await errorFromResponse(response)
+		} catch (error) {
+			console.error(error)
+			alert((error as Error).message)
+		} finally {
+			editMessageLoading = false
+		}
+	}
+
 	let deleteLoading = false
 
 	const deleteLevel = async () => {
 		try {
 			if (deleteLoading) return
+			deleteLoading = true
+
+			$selectedLevel = level.id
+			window.location.hash = `#${level.id}`
 
 			if (!confirm(`Are you sure you want to delete level ${index + 1}?`))
 				return
-
-			deleteLoading = true
 
 			const response = await fetch(
 				`/api/levels/${encodeURIComponent(level.id)}`,
@@ -71,13 +106,23 @@
 	>
 		<p class="id">{level.id}</p>
 		<p class="name">Level {index + 1}</p>
-		<button class="edit">
+		<button class="edit" disabled={!$session.password}>
 			<Edit />
-			Edit
+			Edit Level
+		</button>
+		<button
+			class="edit"
+			aria-busy={editMessageLoading || undefined}
+			disabled={!$session.password}
+			on:click={editMessage}
+		>
+			<Message />
+			Edit Tooltip
 		</button>
 		<button
 			class="delete"
 			aria-busy={deleteLoading || undefined}
+			disabled={!$session.password}
 			on:click={deleteLevel}
 		>
 			<Trash />
@@ -86,7 +131,7 @@
 			<button
 				class="up"
 				aria-busy={$moveLoading || undefined}
-				disabled={index <= 0}
+				disabled={!$session.password || index <= 0}
 				on:click={() => move(-1)}
 			>
 				<Up />
@@ -94,7 +139,7 @@
 			<button
 				class="down"
 				aria-busy={$moveLoading || undefined}
-				disabled={index >= lastIndex}
+				disabled={!$session.password || index >= lastIndex}
 				on:click={() => move(1)}
 			>
 				<Up />
@@ -156,6 +201,10 @@
 		align-items: center;
 		font-size: 0.9rem;
 		color: colors.$blue;
+
+		& + & {
+			margin-left: 1.3rem;
+		}
 
 		> :global(svg) {
 			height: 1.4rem;

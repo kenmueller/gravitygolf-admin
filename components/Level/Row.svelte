@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { page } from '$app/stores'
+
 	import type Level from '$lib/level'
 	import session from '$lib/session/store'
 	import moveLoading from '$lib/level/move/loading'
@@ -13,6 +15,23 @@
 	export let level: Level
 	export let index: number
 	export let lastIndex: number
+
+	let editDataLoading = false
+
+	const editData = () => {
+		if (editDataLoading) return
+		editDataLoading = true
+
+		$selectedLevel = level.id
+		window.location.hash = `#${level.id}`
+
+		window.location.href = `https://grav.golf/levels/editor?publish=${encodeURIComponent(
+			new URL(
+				`/api/levels/${encodeURIComponent(level.id)}/data?data=`,
+				$page.url.origin
+			).href
+		)}&data=${encodeURIComponent(JSON.stringify(level.data))}`
+	}
 
 	let editMessageLoading = false
 
@@ -106,7 +125,12 @@
 	>
 		<p class="id">{level.id}</p>
 		<p class="name">Level {index + 1}</p>
-		<button class="edit" disabled={!$session.password}>
+		<button
+			class="edit"
+			aria-busy={editDataLoading || undefined}
+			disabled={!$session.password}
+			on:click={editData}
+		>
 			<Edit />
 			Edit Level
 		</button>

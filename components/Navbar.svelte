@@ -52,6 +52,7 @@
 	{/each}
 	<form on:submit|preventDefault={savePassword}>
 		<input
+			type="password"
 			placeholder="{$session.password ? 'Change' : 'Enter'} password"
 			bind:value={password}
 		/>

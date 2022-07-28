@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({
 			throw new HttpError(ErrorCode.NotFound, 'Level does not exist')
 
 		const index = get<number, null>(snapshot, 'index', 'number', null)
-		if (!index) throw new HttpError(ErrorCode.Internal, 'Missing index')
+		if (index === null) throw new HttpError(ErrorCode.Internal, 'Missing index')
 
 		switch (offset) {
 			case -1: {

@@ -27,7 +27,7 @@
 
 		window.location.href = `https://grav.golf/levels/editor?publish=${encodeURIComponent(
 			new URL(
-				`/api/levels/${encodeURIComponent(level.id)}/data?data=`,
+				`/api/levels/${encodeURIComponent(level.id)}/data?value=`,
 				$page.url.origin
 			).href
 		)}&data=${encodeURIComponent(JSON.stringify(level.data))}`

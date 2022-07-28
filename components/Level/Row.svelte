@@ -6,6 +6,7 @@
 	import moveLoading from '$lib/level/move/loading'
 	import focusedLevel from '$lib/level/focused'
 	import selectedLevel from '$lib/level/selected'
+	import replaceWithRounded from '$lib/replaceWithRounded'
 	import errorFromResponse from '$lib/error/from/response'
 	import Edit from '../../images/Edit.svelte'
 	import Message from '../../images/Message.svelte'
@@ -25,12 +26,16 @@
 		$selectedLevel = level.id
 		window.location.hash = `#${level.id}`
 
-		window.location.href = `https://grav.golf/levels/editor?publish=${encodeURIComponent(
+		window.location.href = `https://grav.golf/levels/editor?name=${encodeURIComponent(
+			`Level ${index + 1}`
+		)}&publish=${encodeURIComponent(
 			new URL(
 				`/api/levels/${encodeURIComponent(level.id)}/data?value=`,
 				$page.url.origin
 			).href
-		)}&data=${encodeURIComponent(JSON.stringify(level.data))}`
+		)}&data=${encodeURIComponent(
+			JSON.stringify(level.data, replaceWithRounded(2))
+		)}`
 	}
 
 	let editMessageLoading = false

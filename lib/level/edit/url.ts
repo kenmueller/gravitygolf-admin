@@ -11,6 +11,8 @@ const editLevelUrl = ({ origin, index, level }: EditLevelUrlOptions) =>
 	new URL(
 		`/levels/editor?name=${encodeURIComponent(
 			`Level ${index + 1}`
+		)}&back=${encodeURIComponent(
+			new URL(`/levels#${encodeURIComponent(level.id)}`, origin).href
 		)}&publish=${encodeURIComponent(
 			new URL(`/api/levels/${encodeURIComponent(level.id)}/data?value=`, origin)
 				.href

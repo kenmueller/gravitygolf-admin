@@ -8,6 +8,7 @@ import verifyPassword from '$lib/password/verify'
 import invalidPassword from '$lib/password/invalid'
 import get from '$lib/snapshot/get'
 import initialLevelData from '$lib/level/data/initial'
+import replaceWithRounded from '$lib/replaceWithRounded'
 import errorFromValue from '$lib/error/from/value'
 
 const firestore = getFirestore(admin)
@@ -43,7 +44,7 @@ export const POST: RequestHandler = async ({ locals }) => {
 		const { id } = await firestore.collection('levels').add({
 			index: get<number, -1>(docs[0], 'index', 'number', -1) + 1,
 			message: null,
-			data: JSON.stringify(initialLevelData)
+			data: JSON.stringify(initialLevelData, replaceWithRounded(2))
 		})
 
 		return { body: id }

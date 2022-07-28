@@ -18,7 +18,7 @@
 			const id = await response.text()
 
 			$selectedLevel = id
-			location.hash = `#${id}`
+			location.hash = `#${encodeURIComponent(id)}`
 		} catch (error) {
 			console.error(error)
 			alert((error as Error).message)

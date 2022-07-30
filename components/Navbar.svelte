@@ -26,7 +26,7 @@
 
 			if (!response.ok) throw await errorFromResponse(response)
 
-			session.set({ ...session, password: true })
+			session.update(session => ({ ...session, password: true }))
 			password = ''
 		} catch (error) {
 			console.error(error)
